@@ -44,4 +44,4 @@ const userSchema = new mongoose.Schema({
         }
     ],
 })
-export const User_collection = mongoose.model('User_collection',userSchema);
+export const User_collection = mongoose.model('alumni',userSchema);

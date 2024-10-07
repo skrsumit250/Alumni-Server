@@ -29,23 +29,29 @@ await mongoose.connect(URI)
     console.log("DB Not Connected", err);
   });
 
-app.post('/login', async (req, res) => {
-    const data = {
-        uid:req.body.uid,
-        name:req.body.name,
-        email:req.body.email
-    } 
-    console.log(data);
+// User Authentication
+app.post('/auth', async (req, res) => {
     try{
-        const user = await User_collection.findOne({ uid: data.uid });
+        const user = await User_collection.findOne({ uid: req.body.uid });
         if(user){
             console.log('user found',user);
-            res.json({ success: true, message: "Already Registered user"});
+            res.json({ success: true, message: "Already Registered user",userdata:user});
         } 
         else{
+            const data = {
+                uid:req.body.uid,
+                name:req.body.name,
+                email:req.body.email,
+                degree:"",
+                YearOfGraduation:"",
+                phone:"",
+                linkedin:"",
+                education:[],
+                work:[],
+            } 
             const newUser = new User_collection(data);
             await newUser.save();
-            res.json({ success: true, message: "New User Registered"});
+            res.json({ success: true, message: "New User Registered",userdata:newUser});
         }
     } 
     catch(error){
@@ -53,6 +59,36 @@ app.post('/login', async (req, res) => {
         return res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
+
+// Update User Profile
+app.post('/profile', async (req, res) => {
+    console.log(req.body);
+    try{
+        const user = await User_collection.findOneAndUpdate(req.body.uid, {
+            $set: {
+                name:req.body.name,
+                degree:req.body.degree,
+                YearOfGraduation:req.body.YearOfGraduation,
+                phone:req.body.phone,
+                linkedin:req.body.linkedin,
+                education:req.body.education,
+                work:req.body.work,
+            }
+        },{ new: true });
+
+        if(!user){
+            res.status(404).json({success:false, message: 'User not found'});
+        } 
+        else{
+            res.json({ success:true,message: 'User profile updated successfully',user:user });
+        }
+    } 
+    catch(error){
+        console.error('Error during login:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
 
 app.listen(PORT, () => {
     console.log(`App is listening on http://localhost:${PORT}`);
