@@ -1,8 +1,10 @@
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const user_collection = require("./UserModel");
+import express from'express';
+import cors from 'cors';
+import mongoose from'mongoose';
+import bodyParser from'body-parser';
+import { User_collection } from './UserModel.js';
+import dotenv from 'dotenv'
+
 const app = express();
 
 const allowedOrigins = ['http://localhost:5173', 'https://med-log.vercel.app']; 
@@ -15,11 +17,11 @@ app.use(cors({
 app.use(bodyParser.json());
 const PORT = 8000;
 
-require('dotenv').config();
+dotenv.config()
 // const URI = process.env.Local_URI;
 const URI = process.env.DB_URI;
 
-mongoose.connect(URI)
+await mongoose.connect(URI)
   .then(() => {
     console.log("DB Connected");
   })
@@ -35,13 +37,13 @@ app.post('/login', async (req, res) => {
     } 
     console.log(data);
     try{
-        const user = await user_collection.findOne({ uid: data.uid });
+        const user = await User_collection.findOne({ uid: data.uid });
         if(user){
             console.log('user found',user);
             res.json({ success: true, message: "Already Registered user"});
         } 
         else{
-            const newUser = new user_collection(data);
+            const newUser = new User_collection(data);
             await newUser.save();
             res.json({ success: true, message: "New User Registered"});
         }
@@ -55,3 +57,9 @@ app.post('/login', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`App is listening on http://localhost:${PORT}`);
 });
+
+//**** route to api*/
+
+import userRouter from './utils/UserDataRoute.js';
+
+app.use("/api/v1/users",userRouter)
