@@ -29,6 +29,18 @@ await mongoose.connect(URI)
     console.log("DB Not Connected", err);
   });
 
+// Fetching Directory
+app.get('/directory',async(req,res)=>{
+    try{
+        const alumni = await User_collection.find().exec();
+        console.log(alumni);
+        res.json({ success: true, message: 'Alumni directory', alumni: alumni });
+    }
+    catch(error){
+        console.error('Error during login:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+})
 // User Authentication
 app.post('/auth', async (req, res) => {
     try{
@@ -46,6 +58,7 @@ app.post('/auth', async (req, res) => {
                 YearOfGraduation:"",
                 phone:"",
                 linkedin:"",
+                location:"",
                 education:[],
                 work:[],
             } 
@@ -62,20 +75,25 @@ app.post('/auth', async (req, res) => {
 
 // Update User Profile
 app.post('/profile', async (req, res) => {
-    console.log(req.body);
+    const data =req.body;
+    console.log('data',data);
+    console.log('data',data.education);
+    console.log('data',data.work);
+    
     try{
-        const user = await User_collection.findOneAndUpdate(req.body.uid, {
+        const user = await User_collection.findOneAndUpdate({uid:data.uid}, {
             $set: {
-                name:req.body.name,
-                degree:req.body.degree,
-                YearOfGraduation:req.body.YearOfGraduation,
-                phone:req.body.phone,
-                linkedin:req.body.linkedin,
-                education:req.body.education,
-                work:req.body.work,
-            }
+                name:data.name,
+                degree:data.degree,
+                YearOfGraduation:data.YearOfGraduation,
+                phone:data.phone,
+                linkedin:data.linkedin,
+                location:data.location,
+                education:data.education,
+                work:data.work,
+            },
         },{ new: true });
-
+       
         if(!user){
             res.status(404).json({success:false, message: 'User not found'});
         } 
@@ -93,9 +111,3 @@ app.post('/profile', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`App is listening on http://localhost:${PORT}`);
 });
-
-//**** route to api*/
-
-import userRouter from './utils/UserDataRoute.js';
-
-app.use("/api/v1/users",userRouter)

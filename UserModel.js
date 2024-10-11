@@ -32,13 +32,13 @@ const userSchema = new mongoose.Schema({
         {
             university:{type:String},
             degree:{type:String},
-            YearOfGraduation:{type:String}
+            year:{type:String}
         }
     ],
     work:[
         {
             domain:{type:String},
-            position:{type:String},
+            currentPosition:{type:String},
             company:{type:String},
             experience:{type:String},
         }
