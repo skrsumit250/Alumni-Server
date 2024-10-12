@@ -28,7 +28,15 @@ await mongoose.connect(URI)
 // Fetching Directory
 app.get('/directory',async(req,res)=>{
     try{
-        const alumni = await User_collection.find().exec();
+        const alumni = await User_collection.find({}, {
+            name: 1,
+            email: 1,
+            phone: 1,
+            location: 1,
+            education: 1,
+            work: 1
+        }).exec();
+        
         console.log(alumni);
         res.json({ success: true, message: 'Alumni directory', alumni: alumni });
     }
@@ -50,8 +58,6 @@ app.post('/auth', async (req, res) => {
                 uid:req.body.uid,
                 name:req.body.name,
                 email:req.body.email,
-                degree:"",
-                YearOfGraduation:"",
                 phone:"",
                 linkedin:"",
                 location:"",
@@ -73,15 +79,11 @@ app.post('/auth', async (req, res) => {
 app.post('/profile', async (req, res) => {
     const data =req.body;
     console.log('data',data);
-    console.log('data',data.education);
-    console.log('data',data.work);
-    
+ 
     try{
         const user = await User_collection.findOneAndUpdate({uid:data.uid}, {
             $set: {
                 name:data.name,
-                degree:data.degree,
-                YearOfGraduation:data.YearOfGraduation,
                 phone:data.phone,
                 linkedin:data.linkedin,
                 location:data.location,

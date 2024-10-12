@@ -13,12 +13,6 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    degree:{
-        type:String,
-    },
-    YearOfGraduation:{
-        type:String,
-    },
     phone:{
         type:String,
     },
@@ -38,9 +32,9 @@ const userSchema = new mongoose.Schema({
     work:[
         {
             domain:{type:String},
-            currentPosition:{type:String},
+            role:{type:String},
             company:{type:String},
-            experience:{type:String},
+            location:{type:String},
         }
     ],
 })
