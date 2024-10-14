@@ -33,6 +33,7 @@ app.get('/directory',async(req,res)=>{
             email: 1,
             phone: 1,
             location: 1,
+            linkedin:1,
             education: 1,
             work: 1
         }).exec();
