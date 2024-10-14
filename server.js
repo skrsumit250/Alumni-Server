@@ -38,7 +38,7 @@ app.get('/directory',async(req,res)=>{
             work: 1
         }).exec();
         
-        console.log(alumni);
+        // console.log(alumni);
         res.json({ success: true, message: 'Alumni directory', alumni: alumni });
     }
     catch(error){
@@ -51,7 +51,7 @@ app.post('/auth', async (req, res) => {
     try{
         const user = await User_collection.findOne({ uid: req.body.uid });
         if(user){
-            console.log('user found',user);
+            // console.log('user found',user);
             res.json({ success: true, message: "Already Registered user",userdata:user});
         } 
         else{
@@ -79,7 +79,7 @@ app.post('/auth', async (req, res) => {
 // Update User Profile
 app.post('/profile', async (req, res) => {
     const data =req.body;
-    console.log('data',data);
+    // console.log('data',data);
  
     try{
         const user = await User_collection.findOneAndUpdate({uid:data.uid}, {
