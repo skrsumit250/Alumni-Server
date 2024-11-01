@@ -38,6 +38,7 @@ app.get('/directory',async(req,res)=>{
             work: 1
         }).exec();
         
+        alumni.reverse();
         // console.log(alumni);
         res.json({ success: true, message: 'Alumni directory', alumni: alumni });
     }
